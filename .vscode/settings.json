@@ -1,0 +1,19 @@
+{
+    "files.associations": {
+        "*.ino": "cpp",
+        "chassis.h": "c",
+        "arm_math.h": "c",
+        "general_def.h": "c",
+        "robot_def.h": "c",
+        "numbers": "c",
+        "dmmotor.h": "c",
+        "my_fdcan.h": "c",
+        "cstdint": "cpp",
+        "bsp_can.h": "c",
+        "gqmotor.h": "c",
+        "remote_control.h": "c",
+        "libelybot_fdcan.h": "c",
+        "bsp_log.h": "c"
+    },
+    "stm32-for-vscode.makePath": false
+}
