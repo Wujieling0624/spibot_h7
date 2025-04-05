@@ -57,8 +57,7 @@ void GQ_can_set(GQMotorInstance *motor, uint8_t *data, uint8_t len)
 
 void GQMotorGetMeasuretime(GQMotorInstance *motor)
 {
-
-    static int16_t t_ms = 1; // 1ms
+    static int16_t t_ms = 2; // 1ms
 
     const uint8_t cmd[] = {0x05, 0xb4, 0x02, 0x00, 0x00};
 
@@ -102,7 +101,6 @@ static void GQMotorDecode(CANInstance *motor_can)
     }
     else
     {
-        
         measure->last_position = measure->position;
     }
     measure->position = (int16_t)((rxbuff[3] << 8) | rxbuff[2]);

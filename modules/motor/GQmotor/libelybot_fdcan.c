@@ -1,4 +1,4 @@
-// #include "libelybot_fdcan.h"
+// #include "livelybot_fdcan.h"
 // #include "my_fdcan.h"
 // #include <string.h>
 
@@ -363,10 +363,10 @@
 // void set_vel_int16(FDCAN_HandleTypeDef *fdcanHandle, uint8_t id, int16_t vel)
 // {
 //     //							位置模式     2个int16 	  位置		  速度		  占位（fdcan）
-//    static uint8_t cmd[] = {0x01, 0x00, 0x0A, 0x06, 0x20, 0x00, 0x80, 0x00, 0x00, 0x50, 0x50, 0x50};
-    
-//    memcpy(&cmd[7], &vel, sizeof(int16_t));
-//     //static uint8_t cmd[] = {0x01, 0x00, 0x0A, 0x50, 0x50, 0x50,0x50,0x50};
+//     static uint8_t cmd[] = {0x01, 0x00, 0x0A, 0x06, 0x20, 0x00, 0x80, 0x00, 0x00, 0x50, 0x50, 0x50};
+
+//     memcpy(&cmd[7], &vel, sizeof(int16_t));
+
 //     fdcan_send(fdcanHandle, 0x8000 | id, cmd, sizeof(cmd));
 // }
 
@@ -648,7 +648,7 @@
 //     memcpy(&cmd[0], &pos1, sizeof(int16_t));
 //     memcpy(&cmd[2], &pos2, sizeof(int16_t));
 //     memcpy(&cmd[4], &pos3, sizeof(int16_t));
-// 	memcpy(&cmd[5], &pos4, sizeof(int16_t));
+// 	memcpy(&cmd[6], &pos4, sizeof(int16_t));
 
 //     fdcan_send(fdcanHandle, MODE_POSITION, cmd, sizeof(cmd));
 // }
@@ -669,7 +669,7 @@
 //     memcpy(&cmd[0], &vel1, sizeof(int16_t));
 //     memcpy(&cmd[2], &vel2, sizeof(int16_t));
 //     memcpy(&cmd[4], &vel3, sizeof(int16_t));
-// 	memcpy(&cmd[5], &vel4, sizeof(int16_t));
+// 	memcpy(&cmd[6], &vel4, sizeof(int16_t));
 
 //     fdcan_send(fdcanHandle, MODE_VELOCITY, cmd, sizeof(cmd));
 // }
@@ -690,7 +690,7 @@
 //     memcpy(&cmd[0], &tqe1, sizeof(int16_t));
 //     memcpy(&cmd[2], &tqe2, sizeof(int16_t));
 //     memcpy(&cmd[4], &tqe3, sizeof(int16_t));
-// 	memcpy(&cmd[5], &tqe4, sizeof(int16_t));
+// 	memcpy(&cmd[6], &tqe4, sizeof(int16_t));
 
 //     fdcan_send(fdcanHandle, MODE_TORQUE, cmd, sizeof(cmd));
 // }
@@ -711,7 +711,7 @@
 //     memcpy(&cmd[0], &volt1, sizeof(int16_t));
 //     memcpy(&cmd[2], &volt2, sizeof(int16_t));
 //     memcpy(&cmd[4], &volt3, sizeof(int16_t));
-// 	memcpy(&cmd[5], &volt4, sizeof(int16_t));
+// 	memcpy(&cmd[6], &volt4, sizeof(int16_t));
 
 //     fdcan_send(fdcanHandle, MODE_VOLTAGE, cmd, sizeof(cmd));
 // }
@@ -732,7 +732,7 @@
 //     memcpy(&cmd[0], &current1, sizeof(int16_t));
 //     memcpy(&cmd[2], &current2, sizeof(int16_t));
 //     memcpy(&cmd[4], &current3, sizeof(int16_t));
-// 	memcpy(&cmd[5], &current4, sizeof(int16_t));
+// 	memcpy(&cmd[6], &current4, sizeof(int16_t));
 
 //     fdcan_send(fdcanHandle, MODE_CURRENT, cmd, sizeof(cmd));
 // }

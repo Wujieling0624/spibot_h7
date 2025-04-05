@@ -104,8 +104,7 @@ void fdcan_filter_init(FDCAN_HandleTypeDef *fdcanHandle)
         Error_Handler();
     }
 
-    if (HAL_FDCAN_ActivateNotification(
-                fdcanHandle, FDCAN_IT_RX_FIFO0_NEW_MESSAGE | FDCAN_IT_TX_FIFO_EMPTY, 0) != HAL_OK)
+    if (HAL_FDCAN_ActivateNotification(fdcanHandle, FDCAN_IT_RX_FIFO0_NEW_MESSAGE | FDCAN_IT_TX_FIFO_EMPTY, 0) != HAL_OK)
     {
         Error_Handler();
     }

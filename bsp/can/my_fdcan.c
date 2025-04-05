@@ -127,8 +127,4 @@
 //     }
 //     TxHeader.DataLength = get_fdcan_dlc(size);
 //     HAL_FDCAN_AddMessageToTxFifoQ(fdcanHandle, &TxHeader, data);
-//     // while (HAL_FDCAN_IsTxBufferMessagePending(fdcanHandle, FDCAN_TX_BUFFER0) == 1)
-//     // {
-//     //     // 等待消息发送完成
-//     // }
 // }

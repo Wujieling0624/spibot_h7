@@ -122,6 +122,38 @@ void ChassisInit()
     },
     .motor_type = GQ5047,
   };
+
+  // 高擎独占can1
+  Motor_Init_Config_s angle3_config = {
+    .can_init_config = {
+        .can_handle = &hcan3,
+    },
+    .controller_setting_init_config = {
+        .motor_reverse_flag = MOTOR_DIRECTION_REVERSE,
+        .motor_close_loop_type = MOTOR_CLOSE_LOOP,
+        .close_loop_type = ANGLE_LOOP,
+        .outer_loop_type = ANGLE_LOOP,
+    },
+    .controller_param_init_config = {
+        .angle_PID=
+        {
+            .Kp = 0.1, // 4.5
+            .Ki = 0.05,  // 0
+            .Kd = 0,  // 0
+            .MaxOut = 15000,
+            .IntegralLimit = 3000,
+        },
+        .speed_PID=
+        {
+            .Kp = 1, // 4.5
+            .Ki = 0,  // 0
+            .Kd = 0,  // 0
+            .MaxOut = 15000,
+            .IntegralLimit = 3000,
+        },
+    },
+    .motor_type = GQ5047,
+  };
   //高擎注册
   Chassis_angle_config.can_init_config.tx_id = 1;
   fr_hip = GQMotorInit(&Chassis_angle_config);
@@ -131,22 +163,24 @@ void ChassisInit()
   fr_shank = GQMotorInit(&Chassis_angle_config);
   Chassis_angle_config.can_init_config.tx_id = 4;
   br_hip = GQMotorInit(&Chassis_angle_config);
-  Chassis_angle_config.can_init_config.tx_id = 5;
-  br_thigh = GQMotorInit(&Chassis_angle_config); 
-  Chassis_angle_config.can_init_config.tx_id = 6;
-  br_shank = GQMotorInit(&Chassis_angle_config); 
+
+  angle2_config.can_init_config.tx_id = 5;
+  br_thigh = GQMotorInit(&angle2_config); 
+  angle2_config.can_init_config.tx_id = 6;
+  br_shank = GQMotorInit(&angle2_config); 
   angle2_config.can_init_config.tx_id = 1;
   bl_hip = GQMotorInit(&angle2_config); 
   angle2_config.can_init_config.tx_id = 2;
   bl_thigh = GQMotorInit(&angle2_config); 
-  angle2_config.can_init_config.tx_id = 3;
-  bl_shank = GQMotorInit(&angle2_config); 
-  angle2_config.can_init_config.tx_id = 4;
-  fl_hip = GQMotorInit(&angle2_config); 
-  angle2_config.can_init_config.tx_id = 5;
-  fl_thigh = GQMotorInit(&angle2_config); 
-  angle2_config.can_init_config.tx_id = 6;
-  fl_shank = GQMotorInit(&angle2_config); 
+
+  angle3_config.can_init_config.tx_id = 1;
+  fl_hip = GQMotorInit(&angle3_config); 
+  angle3_config.can_init_config.tx_id = 2;
+  bl_shank = GQMotorInit(&angle3_config); 
+  angle3_config.can_init_config.tx_id = 3;
+  fl_thigh = GQMotorInit(&angle3_config); 
+  angle3_config.can_init_config.tx_id = 4;
+  fl_shank = GQMotorInit(&angle3_config); 
   // 计算得到初始角度
   FR_Forward_Trajectory(); BR_Forward_Trajectory(); BL_Forward_Trajectory(); FL_Forward_Trajectory();
   FR_Joint2Theta(); BR_Joint2Theta(); BL_Joint2Theta(); FL_Joint2Theta();
