@@ -245,7 +245,7 @@ CANInstance *CANRegister(CAN_Init_Config_s *config)
     instance->can_module_callback = config->can_module_callback;
     instance->id = config->id;
    // instance->rx_len = 64; // 接收长度初始化为0
-    if(instance->can_handle != &hfdcan1)
+    if(instance->can_handle != &hfdcan1 && instance->can_handle != &hfdcan2)
     CANAddFilter(instance);         // 添加CAN过滤器规则
  //  fdcan_filter_init(instance->can_handle);
 
