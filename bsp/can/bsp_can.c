@@ -153,12 +153,12 @@ void CANServiceInit()
 	// HAL_FDCAN_ActivateNotification(&hfdcan2,FDCAN_RXActiveITs, 0);
     fdcan_filter_init(&hfdcan2);
 
-	HAL_FDCAN_ConfigRxFifoOverwrite(&hfdcan3,FDCAN_RX_FIFO0,FDCAN_RX_FIFO_OVERWRITE);
-	HAL_FDCAN_ConfigRxFifoOverwrite(&hfdcan3,FDCAN_RX_FIFO1,FDCAN_RX_FIFO_OVERWRITE);
-	HAL_FDCAN_ConfigGlobalFilter(&hfdcan3, FDCAN_REJECT, FDCAN_REJECT, FDCAN_REJECT_REMOTE, FDCAN_REJECT_REMOTE);
-	HAL_FDCAN_Start(&hfdcan3);
-	HAL_FDCAN_ActivateNotification(&hfdcan3,FDCAN_RXActiveITs, 0);
-
+	// HAL_FDCAN_ConfigRxFifoOverwrite(&hfdcan3,FDCAN_RX_FIFO0,FDCAN_RX_FIFO_OVERWRITE);
+	// HAL_FDCAN_ConfigRxFifoOverwrite(&hfdcan3,FDCAN_RX_FIFO1,FDCAN_RX_FIFO_OVERWRITE);
+	// HAL_FDCAN_ConfigGlobalFilter(&hfdcan3, FDCAN_REJECT, FDCAN_REJECT, FDCAN_REJECT_REMOTE, FDCAN_REJECT_REMOTE);
+	// HAL_FDCAN_Start(&hfdcan3);
+	// HAL_FDCAN_ActivateNotification(&hfdcan3,FDCAN_RXActiveITs, 0);
+    fdcan_filter_init(&hfdcan3);
 
 #else
 	HAL_CAN_Start(&hcan1);
@@ -245,7 +245,7 @@ CANInstance *CANRegister(CAN_Init_Config_s *config)
     instance->can_module_callback = config->can_module_callback;
     instance->id = config->id;
    // instance->rx_len = 64; // 接收长度初始化为0
-    if(instance->can_handle != &hfdcan1 && instance->can_handle != &hfdcan2)
+    if(instance->can_handle != &hfdcan1 && instance->can_handle != &hfdcan2 && instance->can_handle != &hfdcan3)
     CANAddFilter(instance);         // 添加CAN过滤器规则
  //  fdcan_filter_init(instance->can_handle);
 

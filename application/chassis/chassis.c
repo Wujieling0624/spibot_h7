@@ -14,6 +14,8 @@
 #include "rm_referee.h"
 #include "math.h"
 #include <stdbool.h>
+#include "main.h"
+
 //周期计算，while循环一次时间0.001*TIME_STEP
 #define pi 3.14159
 #define T 120
@@ -173,17 +175,23 @@ void ChassisInit()
   angle2_config.can_init_config.tx_id = 2;
   bl_thigh = GQMotorInit(&angle2_config); 
 
-  angle3_config.can_init_config.tx_id = 1;
-  fl_hip = GQMotorInit(&angle3_config); 
-  angle3_config.can_init_config.tx_id = 2;
-  bl_shank = GQMotorInit(&angle3_config); 
   angle3_config.can_init_config.tx_id = 3;
-  fl_thigh = GQMotorInit(&angle3_config); 
+  bl_shank = GQMotorInit(&angle3_config); 
   angle3_config.can_init_config.tx_id = 4;
+  fl_hip = GQMotorInit(&angle3_config); 
+  angle3_config.can_init_config.tx_id = 5;
+  fl_thigh = GQMotorInit(&angle3_config); 
+  angle3_config.can_init_config.tx_id = 6;
   fl_shank = GQMotorInit(&angle3_config); 
   // 计算得到初始角度
+
+  HAL_GPIO_WritePin(GPIOE, GPIO_PIN_13|GPIO_PIN_9, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0|GPIO_PIN_2, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOC, POWER_24V_2_Pin|POWER_24V_1_Pin, GPIO_PIN_SET);
+
   FR_Forward_Trajectory(); BR_Forward_Trajectory(); BL_Forward_Trajectory(); FL_Forward_Trajectory();
   FR_Joint2Theta(); BR_Joint2Theta(); BL_Joint2Theta(); FL_Joint2Theta();
+
 }
 
 void frInitAngleSet()
@@ -250,7 +258,6 @@ static void LimitChassisOutput()
   else if (motor_ready){
     if (!init_flag)
     {
-    //   _mt++;
       if(fabs(FR_theta1d - fr_hipangle) >= 1.0)
       {
         fl_hipangle = flinit_hipangle + _t*(FL_theta1d-flinit_hipangle)/5.0;
@@ -266,16 +273,17 @@ static void LimitChassisOutput()
         br_thighangle = brinit_thighangle + _t*(BR_theta2d-brinit_thighangle)/5.0;
         br_shankangle = brinit_shankangle + _t*(BR_theta3d-brinit_shankangle)/5.0;
         _t+=0.02;
+        GQMotor_Setref(fl_hip,fl_hipangle); GQMotor_Setref(fl_thigh,fl_thighangle); GQMotor_Setref(fl_shank,fl_shankangle);
+        GQMotor_Setref(bl_hip,bl_hipangle); GQMotor_Setref(bl_thigh,bl_thighangle); GQMotor_Setref(bl_shank,bl_shankangle);
+        GQMotor_Setref(fr_hip,fr_hipangle); GQMotor_Setref(fr_thigh,fr_thighangle); GQMotor_Setref(fr_shank,fr_shankangle);
+        GQMotor_Setref(br_hip,br_hipangle); GQMotor_Setref(br_thigh,br_thighangle); GQMotor_Setref(br_shank,br_shankangle);
       } 
       else if (abs(FR_theta1d - fr_hipangle) < 1.0)
       {
     //     init_flag = true;
     //     hip_ready = true;
       }
-      GQMotor_Setref(fl_hip,fl_hipangle); GQMotor_Setref(fl_thigh,fl_thighangle); GQMotor_Setref(fl_shank,fl_shankangle);
-      GQMotor_Setref(bl_hip,bl_hipangle); GQMotor_Setref(bl_thigh,bl_thighangle); GQMotor_Setref(bl_shank,bl_shankangle);
-      GQMotor_Setref(fr_hip,fr_hipangle); GQMotor_Setref(fr_thigh,fr_thighangle); GQMotor_Setref(fr_shank,fr_shankangle);
-      GQMotor_Setref(br_hip,br_hipangle); GQMotor_Setref(br_thigh,br_thighangle); GQMotor_Setref(br_shank,br_shankangle);
+
       // }
     // else if (init_flag)
     // {

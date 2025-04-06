@@ -127,8 +127,8 @@ int main(void)
   MX_FDCAN1_Init();
   MX_FDCAN2_Init();
   MX_FDCAN3_Init();
-  MX_TIM1_Init();
-  MX_TIM2_Init();
+  // MX_TIM1_Init();
+  // MX_TIM2_Init();
   MX_OCTOSPI2_Init();
   MX_UART5_Init();
   MX_UART8_Init();
