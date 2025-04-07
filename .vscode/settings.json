@@ -13,7 +13,8 @@
         "gqmotor.h": "c",
         "remote_control.h": "c",
         "libelybot_fdcan.h": "c",
-        "bsp_log.h": "c"
+        "bsp_log.h": "c",
+        "stdbool.h": "c"
     },
     "stm32-for-vscode.makePath": false
 }
