@@ -3,7 +3,7 @@
 #include "string.h"
 
 // #include "bsp_log.h"
-#define GQ_MOTOR_CNT 12
+#define GQ_MOTOR_CNT 13
 #define FRICTION_TORQUE 8.0f//摩擦力矩，发送的时候
 static uint8_t idx;
 
@@ -57,7 +57,7 @@ void GQ_can_set(GQMotorInstance *motor, uint8_t *data, uint8_t len)
 
 void GQMotorGetMeasuretime(GQMotorInstance *motor)
 {
-    static int16_t t_ms = 2; // 1ms
+    static int16_t t_ms = 5; // 1ms
 
     const uint8_t cmd[] = {0x05, 0xb4, 0x02, 0x00, 0x00};
 
