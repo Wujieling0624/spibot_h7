@@ -24,7 +24,7 @@
 #define l1 0.05
 #define l2 0.23
 #define l3 0.33
-#define z_offset 0.24
+#define z_offset 0.28
 
 GQMotorInstance *fr_hip, *fr_thigh, *fr_shank;
 GQMotorInstance *br_hip, *br_thigh, *br_shank;
@@ -32,7 +32,7 @@ GQMotorInstance *bl_hip, *bl_thigh, *bl_shank;
 GQMotorInstance *fl_hip, *fl_thigh, *fl_shank;
 
 int n = 0;
-float theta1, theta2, theta3, x_offset = 0.2, link_Stretch = 0.18;
+float theta1, theta2, theta3, x_offset = 0.2, link_Stretch = 0.14;
 float BR_xd, BR_yd, BR_zd, BR_theta1d, BR_theta2d, BR_theta3d;
 float FR_xd, FR_yd, FR_zd, FR_theta1d, FR_theta2d, FR_theta3d;
 float FL_xd, FL_yd, FL_zd, FL_theta1d, FL_theta2d, FL_theta3d;
@@ -341,7 +341,7 @@ void SpibotStand()
         GQMotor_Setref(br_hip, br_hipangle);
         GQMotor_Setref(br_thigh, br_thighangle);
         GQMotor_Setref(br_shank, br_shankangle);
-        _t += 0.02;
+        _t += 0.01;
     }
     else if (fabs(FR_theta2d - fr_thighangle) < 1.0)
     {
@@ -367,16 +367,16 @@ void robotStandPosGet()
 {
     FR_xd = 0 + x_offset;
     FR_yd = link_Stretch;
-    FR_zd = 0.05;
+    FR_zd = 0.08;
     BR_xd = 0 - x_offset;
     BR_yd = link_Stretch;
-    BR_zd = 0.05;
+    BR_zd = 0.08;
     BL_xd = r - x_offset;
     BL_yd = link_Stretch;
-    BL_zd = 0.05;
+    BL_zd = 0.08;
     FL_xd = -r + x_offset;
     FL_yd = link_Stretch;
-    FL_zd = 0.05;
+    FL_zd = 0.08;
     FR_Joint2Theta();
     BR_Joint2Theta();
     BL_Joint2Theta();
@@ -386,11 +386,11 @@ void StandToForward()
 {
     if (fabs(z_offset - BR_zd) >= 0.1)
     {
-        _t += 0.02;
-        BR_zd = 0.05 + _t * (z_offset - 0.05) / 5.0;
-        FR_zd = 0.05 + _t * (z_offset - 0.05) / 5.0;
-        BL_zd = 0.05 + _t * (z_offset - 0.05) / 5.0;
-        FL_zd = 0.05 + _t * (z_offset - 0.05) / 5.0;
+        _t += 0.01;
+        BR_zd = 0.08 + _t * (z_offset - 0.08) / 10.0;
+        FR_zd = 0.08 + _t * (z_offset - 0.08) / 10.0;
+        BL_zd = 0.08 + _t * (z_offset - 0.08) / 10.0;
+        FL_zd = 0.08 + _t * (z_offset - 0.08) / 10.0;
     }
     else if (fabs(z_offset - BR_zd) < 0.1)
     {

@@ -138,7 +138,7 @@ int main(void)
   //const uint8_t cmd[] = {0x18, 0x04, 0x00};
   /* USER CODE BEGIN 2 */
   //HAL_Delay(10000);//高擎测试用
-   RobotInit(); // Ψһ�ĳ�ʼ������
+   RobotInit(); // 
   // LOGINFO("[main] SystemInit() and RobotInit() done");
   // /* USER CODE END 2 */
 
@@ -153,13 +153,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-//	  vofa_start();
-
     /* USER CODE END WHILE */
     
-
-//    fdcan_send(&hfdcan1, 0x8000 | 3, (uint8_t *)cmd, sizeof(cmd));
-
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

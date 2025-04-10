@@ -123,14 +123,14 @@ void ChassisInit()
 
     DWT_Delay(1.0);
 
-    HAL_GPIO_WritePin(GPIOE, GPIO_PIN_13 | GPIO_PIN_9, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0 | GPIO_PIN_2, GPIO_PIN_SET);
+    // HAL_GPIO_WritePin(GPIOE, GPIO_PIN_13 | GPIO_PIN_9, GPIO_PIN_SET);
+    // HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0 | GPIO_PIN_2, GPIO_PIN_SET);
     // HAL_GPIO_WritePin(GPIOC, POWER_24V_2_Pin | POWER_24V_1_Pin, GPIO_PIN_SET);
 
     robotStandPosGet(); //已经有了
 }
 
-static void LimitChassisOutput()
+static void SpibotInit()
 {
     if (!motor_ready)
     {
@@ -146,14 +146,20 @@ static void LimitChassisOutput()
         {
             StandToForward();
         }
-        // else if (init_flag)
-        // {
-        //     Forward_fun();
-        // }
     }
+}
+
+static void LimitChassisOutput()
+{
+    if (!init_flag)
+        SpibotInit();   
+    else
+        Forward_fun();
 }
 
 void Chassis_task()
 {
     LimitChassisOutput();
 }
+
+
