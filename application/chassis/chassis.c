@@ -121,7 +121,7 @@ void ChassisInit()
 
     // 计算得到初始角度
 
-    DWT_Delay(1.0);
+    DWT_Delay(0.5);
 
     // HAL_GPIO_WritePin(GPIOE, GPIO_PIN_13 | GPIO_PIN_9, GPIO_PIN_SET);
     // HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0 | GPIO_PIN_2, GPIO_PIN_SET);
@@ -134,11 +134,12 @@ static void SpibotInit()
 {
     if (!motor_ready)
         motorReadyCheck();
-    else if (motor_ready)
+    // 初始化到12个电机全部接收到信息时大概需要10s
+    else
     {
         if (!stand_ready)
             SpibotStand();
-        else if (stand_ready)
+        else
             StandToForward();
     }
 }
