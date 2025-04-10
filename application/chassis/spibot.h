@@ -49,6 +49,17 @@ float blinit_hipangle = 0.0, blinit_thighangle = 0.0, blinit_shankangle = 0.0;
 float frinit_hipangle = 0.0, frinit_thighangle = 0.0, frinit_shankangle = 0.0;
 float brinit_hipangle = 0.0, brinit_thighangle = 0.0, brinit_shankangle = 0.0;
 
+static void Pump_on() { HAL_GPIO_WritePin(GPIOC, POWER_24V_2_Pin | POWER_24V_1_Pin, GPIO_PIN_SET); }
+static void Pump_off() { HAL_GPIO_WritePin(GPIOC, POWER_24V_2_Pin | POWER_24V_1_Pin, GPIO_PIN_RESET); }
+static void FRSolenoidValve_on() { HAL_GPIO_WritePin(GPIOE, GPIO_PIN_13, GPIO_PIN_SET); }
+static void FRSolenoidValve_off() { HAL_GPIO_WritePin(GPIOE, GPIO_PIN_13, GPIO_PIN_RESET); }
+static void FLSolenoidValve_on() { HAL_GPIO_WritePin(GPIOE, GPIO_PIN_9, GPIO_PIN_SET); }
+static void FLSolenoidValve_off() { HAL_GPIO_WritePin(GPIOE, GPIO_PIN_9, GPIO_PIN_RESET); }
+static void BRSolenoidValve_on() { HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET); }
+static void BRSolenoidValve_off() { HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET); }
+static void BLSolenoidValve_on() { HAL_GPIO_WritePin(GPIOA, GPIO_PIN_2, GPIO_PIN_SET); }
+static void BLSolenoidValve_off() { HAL_GPIO_WritePin(GPIOA, GPIO_PIN_2, GPIO_PIN_RESET); }
+
 float fl_hipangle = 0.0, fl_thighangle = 0.0, fl_shankangle = 0.0;
 float bl_hipangle = 0.0, bl_thighangle = 0.0, bl_shankangle = 0.0;
 float fr_hipangle = 0.0, fr_thighangle = 0.0, fr_shankangle = 0.0;

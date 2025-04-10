@@ -125,24 +125,25 @@ void ChassisInit()
 
     // HAL_GPIO_WritePin(GPIOE, GPIO_PIN_13 | GPIO_PIN_9, GPIO_PIN_SET);
     // HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0 | GPIO_PIN_2, GPIO_PIN_SET);
-    // HAL_GPIO_WritePin(GPIOC, POWER_24V_2_Pin | POWER_24V_1_Pin, GPIO_PIN_SET);
 
-    robotStandPosGet(); //已经有了
+    robotStandPosGet(); 
 }
+
+
 
 static void SpibotInit()
 {
     if (!motor_ready)
         motorReadyCheck();
     // 初始化到12个电机全部接收到信息时大概需要10s
-    else
-    {
+    else{
         if (!stand_ready)
             SpibotStand();
         else
             StandToForward();
     }
 }
+
 
 static void LimitChassisOutput()
 {
