@@ -133,25 +133,19 @@ void ChassisInit()
 static void SpibotInit()
 {
     if (!motor_ready)
-    {
         motorReadyCheck();
-    }
     else if (motor_ready)
     {
         if (!stand_ready)
-        {
             SpibotStand();
-        }
         else if (stand_ready)
-        {
             StandToForward();
-        }
     }
 }
 
 static void LimitChassisOutput()
 {
-    if (!init_flag)
+    if (!spibot_init)
         SpibotInit();   
     else
         Forward_fun();

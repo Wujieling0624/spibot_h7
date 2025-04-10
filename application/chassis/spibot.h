@@ -40,7 +40,7 @@ float BL_xd, BL_yd, BL_zd, BL_theta1d, BL_theta2d, BL_theta3d;
 
 uint16_t mt = 0, _mt = 0;
 float t = 0.000001, _t = 0.000001;
-bool init_flag = false, motor_ready = false;
+bool spibot_init = false, motor_ready = false;
 bool frmotor = false, brmotor = false, blmotor = false, flmotor = false;
 bool stand_ready = false;
 float thetaDiff[12];
@@ -395,7 +395,7 @@ void StandToForward()
     else if (fabs(z_offset - BR_zd) < 0.1)
     {
         _t = 0;
-        init_flag = true;
+        spibot_init = true;
     }
     FR_Joint2Theta();
     BR_Joint2Theta();
