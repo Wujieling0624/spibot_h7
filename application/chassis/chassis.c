@@ -1,6 +1,7 @@
 #include "chassis.h"
 #include "spibot.h"
 
+
 void ChassisInit()
 {
     // 高擎独占can1\2\3
@@ -93,37 +94,37 @@ void ChassisInit()
     // 高擎注册
     
     angle1_config.can_init_config.tx_id = 1;
-    fr_hip = GQMotorInit(&angle1_config);
+    Leg[0].hip = GQMotorInit(&angle1_config);
     angle1_config.can_init_config.tx_id = 2;
-    fr_thigh = GQMotorInit(&angle1_config);
+    Leg[0].thigh = GQMotorInit(&angle1_config);
     angle1_config.can_init_config.tx_id = 3;
-    fr_shank = GQMotorInit(&angle1_config);
+    Leg[0].shank = GQMotorInit(&angle1_config);
     angle1_config.can_init_config.tx_id = 5;
-    br_hip = GQMotorInit(&angle1_config); //引出can1信号接板子
+    Leg[1].hip = GQMotorInit(&angle1_config); //引出can1信号接板子
 
     angle2_config.can_init_config.tx_id = 5;
-    br_thigh = GQMotorInit(&angle2_config);
+    Leg[1].thigh = GQMotorInit(&angle2_config);
     angle2_config.can_init_config.tx_id = 6;
-    br_shank = GQMotorInit(&angle2_config); //引出can2信号接板子
+    Leg[1].shank = GQMotorInit(&angle2_config); //引出can2信号接板子
     angle2_config.can_init_config.tx_id = 1;
-    bl_hip = GQMotorInit(&angle2_config);
+    Leg[2].hip = GQMotorInit(&angle2_config);
     angle2_config.can_init_config.tx_id = 2;
-    bl_thigh = GQMotorInit(&angle2_config);
+    Leg[2].thigh = GQMotorInit(&angle2_config);
 
     angle3_config.can_init_config.tx_id = 3;
-    bl_shank = GQMotorInit(&angle3_config); //引出can3信号接板子
+    Leg[2].shank = GQMotorInit(&angle3_config); //引出can3信号接板子
     angle3_config.can_init_config.tx_id = 4;
-    fl_hip = GQMotorInit(&angle3_config);
+    Leg[3].hip = GQMotorInit(&angle3_config);
     angle3_config.can_init_config.tx_id = 5;
-    fl_thigh = GQMotorInit(&angle3_config);
+    Leg[3].thigh = GQMotorInit(&angle3_config);
     angle3_config.can_init_config.tx_id = 6;
-    fl_shank = GQMotorInit(&angle3_config);
+    Leg[3].shank = GQMotorInit(&angle3_config);
 
     // 计算得到初始角度
 
     DWT_Delay(0.5);
 
-    // HAL_GPIO_WritePin(GPIOE, GPIO_PIN_13 | GPIO_PIN_9, GPIO_PIN_SET);
+    
     // HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0 | GPIO_PIN_2, GPIO_PIN_SET);
 
     robotStandPosGet(); 
@@ -133,9 +134,8 @@ void ChassisInit()
 
 static void SpibotInit()
 {
-    if (!motor_ready)
-        motorReadyCheck();
-    // 初始化到12个电机全部接收到信息时大概需要10s
+    if (!all_motors_ready)
+        motorReadyCheck();// 初始化到12个电机全部接收到信息时大概需要10s
     else{
         if (!stand_ready)
             SpibotStand();
@@ -143,7 +143,6 @@ static void SpibotInit()
             StandToForward();
     }
 }
-
 
 static void LimitChassisOutput()
 {
@@ -153,8 +152,42 @@ static void LimitChassisOutput()
         Forward_fun();
 }
 
+static void thetaToPos()
+{
+    rad[0] = Leg[0].hip->measure.position * toAngle;
+    rad[1] = -Leg[0].thigh->measure.position * toAngle;
+    rad[2] = -Leg[0].shank->measure.position * toAngle;
+    rad[3] = Leg[1].hip->measure.position * toAngle;
+    rad[4] = Leg[1].thigh->measure.position * toAngle;
+    rad[5] = Leg[1].shank->measure.position * toAngle;
+    rad[6] = -Leg[2].hip->measure.position * toAngle;
+    rad[7] = -Leg[2].thigh->measure.position * toAngle;
+    rad[8] = -Leg[2].shank->measure.position * toAngle;
+    rad[9] = -Leg[3].hip->measure.position * toAngle;
+    rad[10] = Leg[3].thigh->measure.position * toAngle;
+    rad[11] = Leg[3].shank->measure.position * toAngle;
+    for (int i = 0; i < 4; i++) 
+    {
+        double sin_rad1 = sin(rad[3*i + 1]);      // rad[1], rad[4], rad[7], rad[10]
+        double sin_rad2 = sin(rad[3*i + 2]);      // rad[2], rad[5], rad[8], rad[11]
+        double cos_rad1 = cos(rad[3*i + 1]);      // rad[1], rad[4], rad[7], rad[10]
+        double cos_diff = cos(rad[3*i + 1] - rad[3*i + 2]);  // rad[1]-rad[2], etc.
+        double sin_diff = sin(rad[3*i + 1] - rad[3*i + 2]);  // rad[1]-rad[2], etc.
+        double term = l2 - l3 * sin_rad2;
+        double len = l1 + term * cos_rad1;
+        x_pos[i] = sin(rad[3*i]) * len;
+        y_pos[i] = cos(rad[3*i]) * len;
+        z_pos[i] = l3 * cos_diff - l2 * sin_rad1;
+        endV[i].x = -sin(rad[3*i]) * sin_diff;
+        endV[i].y = -cos(rad[3*i]) * sin_diff;
+        endV[i].z = -cos_diff;
+    }
+}
+
 void Chassis_task()
 {
+
+    // thetaToPos();
     LimitChassisOutput();
 }
 

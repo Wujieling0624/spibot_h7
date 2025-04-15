@@ -17,5 +17,5 @@
         "stdbool.h": "c"
     },
     "stm32-for-vscode.makePath": false,
-    "cortex-debug.variableUseNaturalFormat": false
+    "cortex-debug.variableUseNaturalFormat": true
 }
