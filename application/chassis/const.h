@@ -41,6 +41,7 @@ typedef struct {
 } LegMotors;
 LegMotors Leg[4]; //  0:fr 1:br 2:bl 3:fl 
 
+// 角度赋值的前置符号
 static const int joint_sign[4][3] = 
 {
     { 1, -1, -1 }, // fr

@@ -154,20 +154,11 @@ static void LimitChassisOutput()
 
 static void thetaToPos()
 {
-    rad[0] = Leg[0].hip->measure.position * toAngle;
-    rad[1] = -Leg[0].thigh->measure.position * toAngle;
-    rad[2] = -Leg[0].shank->measure.position * toAngle;
-    rad[3] = Leg[1].hip->measure.position * toAngle;
-    rad[4] = Leg[1].thigh->measure.position * toAngle;
-    rad[5] = Leg[1].shank->measure.position * toAngle;
-    rad[6] = -Leg[2].hip->measure.position * toAngle;
-    rad[7] = -Leg[2].thigh->measure.position * toAngle;
-    rad[8] = -Leg[2].shank->measure.position * toAngle;
-    rad[9] = -Leg[3].hip->measure.position * toAngle;
-    rad[10] = Leg[3].thigh->measure.position * toAngle;
-    rad[11] = Leg[3].shank->measure.position * toAngle;
     for (int i = 0; i < 4; i++) 
     {
+        rad[3*i + 0] = joint_sign[i][0] * Leg[i].hip->measure.position * toAngle;
+        rad[3*i + 1] = joint_sign[i][1] * Leg[i].thigh->measure.position * toAngle;
+        rad[3*i + 2] = joint_sign[i][2] * Leg[i].shank->measure.position * toAngle;
         double sin_rad1 = sin(rad[3*i + 1]);      // rad[1], rad[4], rad[7], rad[10]
         double sin_rad2 = sin(rad[3*i + 2]);      // rad[2], rad[5], rad[8], rad[11]
         double cos_rad1 = cos(rad[3*i + 1]);      // rad[1], rad[4], rad[7], rad[10]
@@ -187,8 +178,8 @@ static void thetaToPos()
 void Chassis_task()
 {
 
-    // thetaToPos();
-    LimitChassisOutput();
+    thetaToPos();
+    // LimitChassisOutput();
 }
 
 
