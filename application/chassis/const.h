@@ -23,12 +23,14 @@
 #define l1 0.05
 #define l2 0.23
 #define l3 0.33
-#define toRad (pi/180.0)
-#define toAngle (180.0/pi)
 
 double rad[12] = {0};
 
 static bool all_motors_ready = false;
+const double toRad = pi/180.0;
+const double toAngle = 180.0/pi;
+const double base_len = 0.2;
+const double base_wid = 0.2;
 
 typedef struct {
     double x, y, z;
@@ -46,6 +48,9 @@ typedef struct {
     bool legMotorReady;
     double endEffector_posX, endEffector_posY, endEffector_posZ;
     Vector3 endV; // 四个末端法向量
+    double xd_init;
+    double yd_init;
+    double zd_init;
 } LegMotors;
 LegMotors Leg[4]; 
 
@@ -62,6 +67,9 @@ int n = 0;
 float _t = 0.0;
 bool spibot_init = false;
 bool stand_ready = false;
+bool baseToRPY_initialized = false;  // 静态变量，只在第一次初始化为false
+bool yaw_completed = false;
+bool pitch_completed = false;  // 新增标志位，跟踪pitch变换是否完成
 
  // 0:fr 1:br 2:bl 3:fl 
 float init_hipAngle[4] = {0.0};

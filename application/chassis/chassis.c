@@ -145,9 +145,10 @@ void getPos_once(void) {
         thetaToPos(); // 有了endEffector_posX,Y,Z
         initialized = true;  // 标记为已初始化
     }
-
 }
 
+
+ 
 void LimitChassisOutput()
 {
     if (!spibot_init)
@@ -156,13 +157,40 @@ void LimitChassisOutput()
     }
     else
     {
-        getPos_once();
-        baseToXYZ(0.1,0.1,0.0);
+        // baseToXYZ(0.1,0.1,0.0);
+        baseToRPY(10, 10, 10);
     }
 }
 
+double rad_diff;
+double theta_diff;
+// 法向量到三个关节的角度不是一一对应关系，可以加上对zd的要求使得theta2和theta3确定唯一值。
+// endVToTheta(Leg[i].endV.x, Leg[i].endV.y, Leg[i].endV.z, Leg[i].endEffector_posZ, i); 
+// bug：需要在一定的角度范围内，不然会+-180突变
+void endVToTheta(double Vx, double Vy, double Vz, double zd, uint8_t leg_id)
+{
+    rad[3 * leg_id + 0] = atan(Vx / Vy); // 弧度
+    rad[3 * leg_id + 1] = asin(-(zd + l3 * Vz) / l2);
+    rad_diff = atan2(sqrt(pow(Vx, 2) + pow(Vy, 2)), Vz);
+    theta_diff = rad_diff * toAngle;
+    rad[3 * leg_id + 2] = rad[3 * leg_id + 1] - rad_diff + M_PI;
+    
+    theta1[leg_id] = rad[3 * leg_id + 0] * toAngle;
+    theta2[leg_id] = rad[3 * leg_id + 1] * toAngle;
+    theta3[leg_id] = rad[3 * leg_id + 2] * toAngle;
+    theta1d[leg_id] = joint_sign[leg_id][0] * theta1[leg_id];
+    theta2d[leg_id] = joint_sign[leg_id][1] * theta2[leg_id];
+    theta3d[leg_id] = joint_sign[leg_id][2] * theta3[leg_id];
+}
+
+
 void Chassis_task()
 {
+    // thetaToPos();
+    // for (uint8_t i = 0; i < 4; i++) 
+    // {
+    // }   
     LimitChassisOutput();
+
 }
 

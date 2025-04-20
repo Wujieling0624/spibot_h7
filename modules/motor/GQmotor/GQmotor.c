@@ -302,7 +302,6 @@ static void set_conf_write(GQMotorInstance *motor)
 
 void GQMotor_Zero_force(GQMotorInstance *motor)
 {
-
     GQMotor_CurrentMode_Setref(motor, 0);
 }
 
@@ -319,7 +318,7 @@ void GQMotorTask()
 
     for (size_t i = 0; i < idx; i++)
     {
-                motor = gq_motor_instance[i];
+        motor = gq_motor_instance[i];
         if(motor->stop_flag == MOTOR_STOP)
         {
             GQMotor_Zero_force(motor);

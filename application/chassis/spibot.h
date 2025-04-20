@@ -30,14 +30,19 @@ static void thetaToPos()
         rad[3 * i + 0] = joint_sign[i][0] * Leg[i].hip->measure.position * toRad;
         rad[3 * i + 1] = joint_sign[i][1] * Leg[i].thigh->measure.position * toRad;
         rad[3 * i + 2] = joint_sign[i][2] * Leg[i].shank->measure.position * toRad;
-
+        theta1[i] = rad[3 * i + 0] * toAngle;
+        theta2[i] = rad[3 * i + 1] * toAngle;
+        theta3[i] = rad[3 * i + 2] * toAngle;
+        theta1d[i] = joint_sign[i][0] * theta1[i];
+        theta2d[i] = joint_sign[i][1] * theta2[i];
+        theta3d[i] = joint_sign[i][2] * theta3[i];    
         double sin_rad0 = sin(rad[3 * i + 0]);                  // rad[0], rad[3], rad[6], rad[9]
         double sin_rad1 = sin(rad[3 * i + 1]);                  // rad[1], rad[4], rad[7], rad[10]
-        double sin_rad2 = sin(rad[3 * i + 2]);                  // rad[2], rad[5], rad[8], rad[11]
         double cos_rad0 = cos(rad[3 * i + 0]);                  // rad[0], rad[3], rad[6], rad[9]
         double cos_rad1 = cos(rad[3 * i + 1]);                  // rad[1], rad[4], rad[7], rad[10]
         double cos_diff = cos(rad[3 * i + 1] - rad[3 * i + 2]); // rad[1]-rad[2], etc.
         double sin_diff = sin(rad[3 * i + 1] - rad[3 * i + 2]); // rad[1]-rad[2], etc.
+
         Leg[i].endEffector_posX = l3 * sin_rad0 * sin_diff + l2 * sin_rad0 * cos_rad1 + l1 * sin_rad0;
         Leg[i].endEffector_posY = l3 * cos_rad0 * sin_diff + l2 * cos_rad0 * cos_rad1 + l1 * cos_rad0;
         Leg[i].endEffector_posZ = l3 * cos_diff - l2 * sin_rad1;
@@ -92,7 +97,7 @@ void GQ_motorSet()
 
 void SpibotStand()
 {
-    if (fabs(theta2d[0] - thighAngle[0]) >= 0.5)
+    if (fabs(theta2d[0] - thighAngle[0]) >= 0.1)
     {
         for (uint8_t i = 0; i < 4; i++)
         {
@@ -105,7 +110,7 @@ void SpibotStand()
         }
         _t += 0.01;
     }
-    else if (fabs(theta2d[0] - thighAngle[0]) < 0.5)
+    else if (fabs(theta2d[0] - thighAngle[0]) < 0.1)
     {
         _t = 0.0;
         stand_ready = true;
@@ -128,6 +133,11 @@ void Forward_fun()
 // 作用：机体后退move_x米，向上move_z米，从B往F看是向左move_y米，除去摆动相
 void baseToXYZ(double move_x, double move_y, double move_z)
 {
+    static bool baseToXYZ_initialized = false;  // 静态变量，只在第一次初始化为false
+    if (!baseToXYZ_initialized) {
+        thetaToPos(); // 有了endEffector_posX,Y,Z
+        baseToXYZ_initialized = true;  // 标记为已初始化
+    }
     int ysign[4] = {1, 1, -1, -1}; // 0:fr 1:br 2:bl 3:fl
     int SwingIndex = -1;
     uint8_t SupportIndex = 0;
@@ -164,7 +174,7 @@ void baseToXYZ(double move_x, double move_y, double move_z)
     }
     else if (fabs(Leg[SupportIndex].endEffector_posX + move_x - xd[SupportIndex]) < 0.001)
     {
-        _t = 0;
+        _t = 0.0;
     }
     for (uint8_t i = 0; i < 4; i++)
     {
@@ -206,6 +216,102 @@ void StandToForward()
         spibot_init = true;
     }
     GQ_motorSet();
+}
+
+
+// 返回值：
+// true: 姿态已经实现
+// false: 姿态还未实现
+void baseToRPY(double move_yawAngle, double move_pitchAngle, double move_rollAngle)
+{
+    int SwingIndex = -1;
+    uint8_t SupportIndex = 0;
+
+    // 当所有变换完成后重置状态
+    if (baseToRPY_initialized && yaw_completed && pitch_completed) {
+        return;
+    }
+
+    if (!baseToRPY_initialized) {
+        thetaToPos(); // 得到endEffector_posX,endEffector_posY,zd
+        for (uint8_t i = 0; i < 4; i++)
+        {
+            if (Leg[i].swingPhase == true)
+            {
+                SwingIndex = i;
+                break;
+            }
+            else
+            {
+                SupportIndex = i;
+            }
+
+            Leg[i].zd_init = Leg[i].endEffector_posZ;
+            Leg[i].xd_init = Leg[i].endEffector_posX;
+            Leg[i].yd_init = Leg[i].endEffector_posY;
+            init_hipAngle[i] = Leg[i].hip->measure.position;
+        }
+        baseToRPY_initialized = true;  // 标记为已初始化
+        yaw_completed = false;
+        pitch_completed = false;
+    }
+
+    double move_pitchRad = move_pitchAngle * toRad;
+    double move_rollRad = move_rollAngle * toRad;
+    int z1sign[4] = {-1, 1, 1, -1}; // 0:fr 1:br 2:bl 3:fl
+    int z2sign[4] = {1, 1, -1, -1}; // 0:fr 1:br 2:bl 3:fl
+    // 阶段1：先进行yaw变换
+    if (!yaw_completed)
+    {
+        if (fabs(init_hipAngle[SupportIndex] + move_yawAngle - Leg[SupportIndex].hip->measure.position) >= 0.5)
+        {
+            for (uint8_t i = 0; i < 4; i++)
+            {
+                if (SwingIndex == i)
+                    theta1d[i] = init_hipAngle[i];
+                else
+                    theta1d[i] = init_hipAngle[i] + _t * move_yawAngle / 10.0;
+                GQMotor_Setref(Leg[i].hip, theta1d[i]);
+            }
+            _t += 0.01;
+        }
+        else
+        {
+            _t = 0.0;
+            yaw_completed = true;  // yaw变换完成
+            thetaToPos();  // 更新位置信息
+        }
+        return;  // 确保在yaw变换完成前不进行后续操作
+    }
+    // 阶段2：yaw变换完成后进行pitch变换
+    if (!pitch_completed) 
+    {
+        // 计算pitch/roll变换量
+        double move_z1 = (2 * fabs(Leg[SupportIndex].xd_init) + base_len) * atan2(move_pitchRad, 1) / 2.0; 
+        double move_z2 = (2 * fabs(Leg[SupportIndex].yd_init) + base_wid) * atan2(move_rollRad, 1) / 2.0;
+        if (fabs(Leg[SupportIndex].zd_init + z1sign[SupportIndex] * move_z1 + z2sign[SupportIndex] * move_z2 - zd[SupportIndex]) >= 0.001)
+        {
+            for (uint8_t i = 0; i < 4; i++)
+            {
+                xd[i] = Leg[i].endEffector_posX;
+                yd[i] = Leg[i].endEffector_posY;
+                double move_z = z1sign[i] * move_z1 + z2sign[i] * move_z2;
+                if (SwingIndex == i)
+                    zd[i] = Leg[i].zd_init;
+                else
+                    zd[i] = Leg[i].zd_init + _t * move_z / 10.0;
+                XYZ2Theta(i);
+            }      
+            GQ_motorSet();  
+            _t += 0.01;
+        }
+        else
+        {
+            _t = 0.0;
+            pitch_completed = true;  // pitch变换完成
+        }
+        return;
+    }
 }
 
 #endif
