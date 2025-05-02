@@ -122,10 +122,16 @@ void ChassisInit()
 
     DWT_Delay(0.5);
 
-    // HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0 | GPIO_PIN_2, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0 | GPIO_PIN_2, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(GPIOE, GPIO_PIN_13, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOE, GPIO_PIN_9, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_2, GPIO_PIN_RESET);
 
-    robotStandPosGet(); 
-}
+    robotStandPosGet();  // 修改前进和站立步态初始值
+} 
+
+
 
 void SpibotInit()
 {
@@ -148,7 +154,7 @@ void getPos_once(void) {
 }
 
 
- 
+// double theta1_measure, theta2_measure, theta3_measure;
 void LimitChassisOutput()
 {
     if (!spibot_init)
@@ -157,8 +163,12 @@ void LimitChassisOutput()
     }
     else
     {
+        // Forward_fun();
+        // theta1_measure = Leg[0].hip->measure.position;
+        // theta2_measure = Leg[0].thigh->measure.position;
+        // theta3_measure = Leg[0].shank->measure.position;
         // baseToXYZ(0.1,0.1,0.0);
-        baseToRPY(10, 10, 10);
+        // baseToRPY(10, 10, 10);
     }
 }
 
@@ -184,6 +194,7 @@ void endVToTheta(double Vx, double Vy, double Vz, double zd, uint8_t leg_id)
 }
 
 
+int ledt = 0;
 void Chassis_task()
 {
     // thetaToPos();
@@ -191,6 +202,23 @@ void Chassis_task()
     // {
     // }   
     LimitChassisOutput();
+    // ledt ++;
+    // if (ledt > 2000 && ledt < 4000)
+    // {
+    //     FRSolenoidValve_on();
+    //     FLSolenoidValve_on();
+    //     BRSolenoidValve_on();
+    //     BLSolenoidValve_on();
+    // }
+    // else if (ledt > 0 && ledt <= 2000)
+    // {
+    //     FRSolenoidValve_off();
+    //     FLSolenoidValve_off();
+    //     BRSolenoidValve_off();
+    //     BLSolenoidValve_off();
+    // }
+    // else 
+    //     ledt = 0;
 
 }
 

@@ -3,6 +3,63 @@
 
 #include "const.h"
 
+
+// 0:fr 1:br 2:bl 3:fl 
+void forwardTraj()
+{
+    for (uint8_t i = 0; i < 4; i++)
+    {
+        yd[i] = offset.y;
+        zd[i] = offset.z;
+    }
+    if (_t > 1.0 * n * T && _t <= (n + 1 / 6.0) * T)
+    {
+        xd[0] = (-3.0 * offset.x / T) * (_t - n * T) + offset.x;
+        xd[1] = (-3.0 * offset.x / T) * (_t - n * T) - offset.x;
+        xd[2] = (-3.0 * offset.x / T) * (_t - n * T) - offset.x;
+        xd[3] = (-3.0 * offset.x / T) * (_t - n * T) + offset.x;
+    }
+    else if ((_t > (n + 1 / 6.0) * T) && (_t <= (n + 1 / 3.0) * T))
+    {
+        xd[0] = -0.5 * offset.x + offset.x;
+        xd[1] = -0.5 * offset.x - offset.x;
+        xd[2] = (6.0 * offset.x / T) * (_t - T / 4.0 - n * T) - offset.x;
+        xd[3] = -0.5 * offset.x + offset.x;
+        zd[2] = r * sin(w1 * _t) + offset.z;
+    }
+    else if ((_t > (n + 1 / 3.0) * T) && (_t <= (n + 1 / 2.0) * T))
+    {
+        xd[0] = -0.5 * offset.x + offset.x;
+        xd[1] = (6.0 * offset.x / T) * (_t - 5 * T / 12.0 - n * T) - offset.x;
+        xd[2] = 0.5 * offset.x - offset.x;
+        xd[3] = -0.5 * offset.x + offset.x;
+        zd[1] = -r * sin(w1 * _t) + offset.z;
+    }
+    else if ((_t > (n + 1 / 2.0) * T) && (_t <= (n + 2 / 3.0) * T))
+    {
+        xd[0] = (6.0 * offset.x / T) * (_t - 7 * T / 12.0 - n * T) + offset.x;
+        xd[1] = 0.5 * offset.x - offset.x;
+        xd[2] = 0.5 * offset.x - offset.x;
+        xd[3] = -0.5 * offset.x + offset.x;
+        zd[0] = r * sin(w1 * _t) + offset.z;
+    }
+    else if ((_t > (n + 2 / 3.0) * T) && (_t <= (n + 5 / 6.0) * T))
+    {
+        xd[0] = 0.5 * offset.x + offset.x;
+        xd[1] = 0.5 * offset.x - offset.x;
+        xd[2] = 0.5 * offset.x - offset.x;
+        xd[3] = (6.0 * offset.x / T) * (_t - 9 * T / 12.0 - n * T) + offset.x;
+        zd[3] = -r * sin(w1 * _t) + offset.z;
+    }
+    else if (_t > (n + 5 / 6.0) * T && _t <= (n + 1.0) * T)
+    {
+        xd[0] = (-3.0 * offset.x / T) * (_t - T - n * T) + offset.x;
+        xd[1] = (-3.0 * offset.x / T) * (_t - T - n * T) - offset.x;
+        xd[2] = (-3.0 * offset.x / T) * (_t - T - n * T) - offset.x;
+        xd[3] = (-3.0 * offset.x / T) * (_t - T - n * T) + offset.x;
+    }
+}
+
 void FR_Forward_Trajectory(){
     yd[0] = offset.y; // 沿直线前后摆动
     if (_t > 1.0 * n * T && _t <= (n + 1 / 6.0) * T)

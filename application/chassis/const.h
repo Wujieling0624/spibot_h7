@@ -15,7 +15,7 @@
 
 #define pi 3.141592653589793
 #define T 120
-#define r 0.15f
+#define r 0.1f
 #define T1 T / 3.0
 #define T2 T / 2.0
 #define w1 (2 * pi) / (1.0 * T1)
@@ -25,7 +25,7 @@
 #define l3 0.33
 
 double rad[12] = {0};
-
+ 
 static bool all_motors_ready = false;
 const double toRad = pi/180.0;
 const double toAngle = 180.0/pi;
@@ -39,7 +39,7 @@ typedef struct {
 typedef struct {
     float x, y, z;
 } Offset;
-Offset offset = {0.2f, 0.16f, 0.25f};
+Offset offset = {0.15f, 0.14f, 0.22f};
 
 // 0:fr 1:br 2:bl 3:fl 
 typedef struct {
@@ -94,9 +94,9 @@ void FRSolenoidValve_on() { HAL_GPIO_WritePin(GPIOE, GPIO_PIN_13, GPIO_PIN_SET);
 void FRSolenoidValve_off() { HAL_GPIO_WritePin(GPIOE, GPIO_PIN_13, GPIO_PIN_RESET); }
 void FLSolenoidValve_on() { HAL_GPIO_WritePin(GPIOE, GPIO_PIN_9, GPIO_PIN_SET); }
 void FLSolenoidValve_off() { HAL_GPIO_WritePin(GPIOE, GPIO_PIN_9, GPIO_PIN_RESET); }
-void BRSolenoidValve_on() { HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET); }
-void BRSolenoidValve_off() { HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET); }
-void BLSolenoidValve_on() { HAL_GPIO_WritePin(GPIOA, GPIO_PIN_2, GPIO_PIN_SET); }
-void BLSolenoidValve_off() { HAL_GPIO_WritePin(GPIOA, GPIO_PIN_2, GPIO_PIN_RESET); }
+void BRSolenoidValve_on() { HAL_GPIO_WritePin(GPIOA, GPIO_PIN_2, GPIO_PIN_SET); }
+void BRSolenoidValve_off() { HAL_GPIO_WritePin(GPIOA, GPIO_PIN_2, GPIO_PIN_RESET); }
+void BLSolenoidValve_on() { HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET); }
+void BLSolenoidValve_off() { HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET); }
 
 #endif

@@ -117,6 +117,7 @@ void SpibotStand()
     }
 }
 
+// 1.0
 void Forward_fun()
 {
     FR_Forward_Trajectory();
@@ -126,9 +127,20 @@ void Forward_fun()
     for (uint8_t i = 0; i < 4; i++)
         XYZ2Theta(i);
     n = (int)(1.0 * _t / T); // 第0,1,2,.....周期
-    _t += 0.01;
+    _t += 0.03;
     GQ_motorSet();
 }
+
+void CreepTraj()
+{
+    forwardTraj();
+    for (uint8_t i = 0; i < 4; i++)
+        XYZ2Theta(i);
+    n = (int)(1.0 * _t / T); // 第0,1,2,.....周期
+    _t += 0.03;
+    GQ_motorSet();
+}
+
 
 // 作用：机体后退move_x米，向上move_z米，从B往F看是向左move_y米，除去摆动相
 void baseToXYZ(double move_x, double move_y, double move_z)
@@ -186,7 +198,7 @@ void baseToXYZ(double move_x, double move_y, double move_z)
 void robotStandPosGet()
 {
     // float first_item[4] = {0, 0, r, -r};  // 前进步态初始值
-    float first_item[4] = {0, 0, 0, -0}; // 前进步态初始值
+    float first_item[4] = {0, 0, 0, 0}; // 站立步态初始值
     int sign_item[4] = {1, -1, -1, 1};   // offset.x 的符号
     for (uint8_t i = 0; i < 4; i++)
     {
